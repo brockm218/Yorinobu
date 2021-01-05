@@ -35,7 +35,7 @@ async function main() {
 		}
 		);
 		
-	const twitchChannels = ['spoodah', 'jg7tv', 'azfura', 'dexter0'];
+	const twitchChannels = ['spoodah', 'azfura', 'dexter0'];
 	const chatClient = new ChatClient(authProvider, { channels: twitchChannels, logger: { minLevel: 'warning' } });
 	await chatClient.connect()
 	.then(() => {
@@ -83,7 +83,7 @@ async function main() {
 	chatClient.onMessage((channel, user, message, msg) => {
 		if(msg.isCheer) {
 			const botMsg = `PogChamp BITS DONATION!!! PogChamp Thank you so much @${user} for the ${msg.totalBits} bitties! You're too kind! spoodLove`;
-			publishMessage(channel, message);
+			publishMessage(channel, botMsg);
 		}
 
 		if(message.toLowerCase() === '!myd') {
@@ -180,7 +180,7 @@ async function main() {
 		if (message.action === 'timeout') {
 			const [target, duration, reason] = message.args;
 			const moderator = message.userName;
-			console.log(`${target} was timed out for ${duration} seconds by ${moderator}. (Reason: ${reason ?? 'not provided.'})`);
+			console.log(`${target} was timed out for ${duration} seconds by ${moderator}. (Reason: ${reason || 'not provided.'})`);
 
 			const embed = new Discord.MessageEmbed()
 				.setTitle('**Spoodah** - New Chat Event')
@@ -195,7 +195,7 @@ async function main() {
 		if(message.action === 'ban') {
 			const [target, reason] = message.args;
 			const moderator = message.userName;
-			console.log(`${target} was banned by ${moderator}. (Reason: ${reason ?? 'not provided.'})`);
+			console.log(`${target} was banned by ${moderator}. (Reason: ${reason || 'not provided.'})`);
 
 			const embed = new Discord.MessageEmbed()
 				.setTitle('**Spoodah** - New Chat Event')
