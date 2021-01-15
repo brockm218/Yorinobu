@@ -86,14 +86,14 @@ async function main() {
 			publishMessage(channel, botMsg);
 		}
 
-		if(message.toLowerCase() === '!myd') {
+		if(message.toLowerCase() === '!myd' &&  ( msg.userInfo.isSubscriber || msg.userInfo.isVip || msg.userInfo.isMod )) {
 			publishMessage(channel, computeDickSize(msg));
 		}
 	});
 
 	chatClient.onSub((channel, user, subInfo) => {
 		if(subInfo.isPrime) {
-			const botMsg = `spoodHype PRIME SUB!!! spoodHype @${user} just subscribed using Twitch Prime! Welcome to the squadron <3 spoodGLB`;
+			const botMsg = `pokiPrime PRIME SUB!!! pokiPrime @${user} just subscribed using Twitch Prime! Welcome to the squadron <3 spoodGLB`;
 			publishMessage(channel, botMsg);
 		}
 		else if(subInfo.plan === '1000') {
@@ -112,7 +112,7 @@ async function main() {
 
   chatClient.onResub((channel, user, subInfo) => {
     if(subInfo.isPrime) {
-      const botMsg = `spoodHype PRIME RESUB!!! spoodHype Welcome back @${subInfo.displayName} for ${subInfo.months} months spoodGLB`;
+      const botMsg = `pokiPrime PRIME RESUB!!! pokiPrime Welcome back @${subInfo.displayName} for ${subInfo.months} months spoodGLB`;
       publishMessage(channel, botMsg);
     }
     else if(subInfo.plan === '1000') {
@@ -157,7 +157,7 @@ async function main() {
   chatClient.onCommunitySub((channel, user, subInfo, msg) => {
     const previousGiftCount = giftCounts.get(user) ?? 0;
     giftCounts.set(user, previousGiftCount + subInfo.count);
-    const botMsg = `spoodGLB GIFT SUB HYPE!! spoodGLB Thank you @${subInfo.gifterDisplayName} for gifting ${subInfo.count} subs to the squadron! spoodLove`;
+    const botMsg = `pokiGift GIFT SUB HYPE!! pokiGift Thank you @${subInfo.gifterDisplayName} for gifting ${subInfo.count} subs to the squadron! spoodGLB`;
     publishMessage(channel, botMsg);
   });
 
@@ -171,6 +171,14 @@ async function main() {
       publishMessage(channel, botMsg);
     }
 	});
+
+	chatClient.onAction((channel, user, message, msg) => {
+		if(channel === '#spoodah') {
+			if(!msg.userInfo.isSubscriber && !msg.userInfo.isMod) {
+				chatClient.deleteMessage(channel, msg);
+			}
+		}
+	});
 	
 	const userId = await pubSubClient.registerUserListener(apiClient);
 	const spoodId = await apiClient.helix.users.getUserByName(twitchChannels[0]) ?? 0; // replace desired index from twitchChannels
@@ -180,14 +188,14 @@ async function main() {
 		if (message.action === 'timeout') {
 			const [target, duration, reason] = message.args;
 			const moderator = message.userName;
-			console.log(`${target} was timed out for ${duration} seconds by ${moderator}. (Reason: ${reason || 'not provided.'})`);
+			console.log(`${target} was timed out for ${duration} seconds by ${moderator}. (Reason: ${reason || 'not specified.'})`);
 
 			const embed = new Discord.MessageEmbed()
 				.setTitle('**Spoodah** - New Chat Event')
 				.setColor('0xff9600')
 				.setTimestamp()
 				.addField('Timeout', `${target} was timed out for ${duration} seconds by ${moderator}.`)
-				.addField('Reason', `${reason ?? 'not specified.'}`);
+				.addField('Reason', `${reason || 'not specified.'}`);
 				//@ts-ignore
 			logChannel.send(embed);
 		}
@@ -195,14 +203,14 @@ async function main() {
 		if(message.action === 'ban') {
 			const [target, reason] = message.args;
 			const moderator = message.userName;
-			console.log(`${target} was banned by ${moderator}. (Reason: ${reason || 'not provided.'})`);
+			console.log(`${target} was banned by ${moderator}. (Reason: ${reason || 'not specified.'})`);
 
 			const embed = new Discord.MessageEmbed()
 				.setTitle('**Spoodah** - New Chat Event')
 				.setColor('0xff0000')
 				.setTimestamp()
 				.addField('Ban', `${target} was banned by ${moderator}.`)
-				.addField('Reason', `${reason ?? 'not specified.'}`);
+				.addField('Reason', `${reason || 'not specified.'}`);
 				//@ts-ignore
 			logChannel.send(embed);
     }
