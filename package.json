@@ -2,9 +2,10 @@
   "name": "Yorinobu",
   "version": "1.0.0",
   "description": "",
-  "main": "src/bot.ts",
+  "main": "src/index.ts",
   "scripts": {
-    "start": "ts-node src/index.ts"
+    "start": "ts-node src/index.ts",
+    "screen": "screen nodemon --watch ./src/index.ts"
   },
   "repository": {
     "type": "git",

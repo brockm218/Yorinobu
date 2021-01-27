@@ -158,7 +158,9 @@ async function main() {
     const previousGiftCount = giftCounts.get(user) ?? 0;
     giftCounts.set(user, previousGiftCount + subInfo.count);
     const botMsg = `pokiGift GIFT SUB HYPE!! pokiGift Thank you @${subInfo.gifterDisplayName} for gifting ${subInfo.count} subs to the squadron! spoodGLB`;
-    publishMessage(channel, botMsg);
+		publishMessage(channel, botMsg);
+		const botMsg2 = `spoodHey Welcome to all the new subscribers! spoodSalute`;
+		publishMessage(channel, botMsg2);
   });
 
   chatClient.onSubGift((channel, recipient, subInfo) => {
