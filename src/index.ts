@@ -79,7 +79,7 @@ async function main() {
 
 		return '';
 	}
-	
+
 	chatClient.onMessage((channel, user, message, msg) => {
 		if(msg.isCheer) {
 			const botMsg = `PogChamp BITS DONATION!!! PogChamp Thank you so much @${user} for the ${msg.totalBits} bitties! You're too kind! spoodLove`;
@@ -156,11 +156,17 @@ async function main() {
 	const giftCounts = new Map<string | undefined, number>();
   chatClient.onCommunitySub((channel, user, subInfo, msg) => {
     const previousGiftCount = giftCounts.get(user) ?? 0;
-    giftCounts.set(user, previousGiftCount + subInfo.count);
-    const botMsg = `pokiGift GIFT SUB HYPE!! pokiGift Thank you @${subInfo.gifterDisplayName} for gifting ${subInfo.count} subs to the squadron! spoodGLB`;
-		publishMessage(channel, botMsg);
-		const botMsg2 = `spoodHey Welcome to all the new subscribers! spoodSalute`;
-		publishMessage(channel, botMsg2);
+		giftCounts.set(user, previousGiftCount + subInfo.count);
+		if (subInfo.count === 1) {
+			const botMsg = `pokiGift GIFT SUB HYPE!! pokiGift Thank you @${subInfo.gifterDisplayName} for gifting ${subInfo.count} subs to the squadron! spoodGLB`;
+			publishMessage(channel, botMsg);
+			const botMsg2 = `spoodHey Welcome to all the new subscribers! spoodSalute`;
+			publishMessage(channel, botMsg2);
+		}
+		else {
+			const botMsg = `spoodGLB GIFT SUB HYPE!! spoodGLB Thank you ${subInfo.gifterDisplayName} for gifting a random sub to the squadron! spoodLove!`;
+      publishMessage(channel, botMsg);
+		}
   });
 
   chatClient.onSubGift((channel, recipient, subInfo) => {
