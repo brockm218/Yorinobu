@@ -168,7 +168,7 @@ async function main() {
 			publishMessage(channel, botMsg2);
 		}
 		else {
-			const botMsg = `spoodGLB GIFT SUB HYPE!! spoodGLB Thank you ${subInfo.gifterDisplayName} for gifting a random sub to the squadron! spoodLove!`;
+			const botMsg = `spoodGLB GIFT SUB HYPE!! spoodGLB Thank you ${subInfo.gifterDisplayName} for gifting a random sub to the squadron! spoodLove`;
       publishMessage(channel, botMsg);
 		}
   });
