@@ -89,6 +89,10 @@ async function main() {
 		if(message.toLowerCase() === '!myd' &&  ( msg.userInfo.isSubscriber || msg.userInfo.isVip || msg.userInfo.isMod )) {
 			publishMessage(channel, computeDickSize(msg));
 		}
+
+		if(message.toLowerCase() === '!prime') {
+			publishMessage(channel, `If you have Amazon Prime connect your account here -> twitch.amazon.com/prime ! Once you have linked your accounts click the sub button and sub for FREE PogChamp Need help? Click here -> https://goo.gl/VyzHCX cizzHearts`);
+		}
 	});
 
 	chatClient.onSub((channel, user, subInfo) => {
@@ -193,63 +197,65 @@ async function main() {
 	const logChannel = (await dClient.guilds.fetch('788709812711456798')).channels.cache.get('788711449219694612');
 
 	const modListener = await pubSubClient.onModAction(userId, spoodId, message => {
-		if (message.action === 'timeout') {
-			const [target, duration, reason] = message.args;
-			const moderator = message.userName;
-			console.log(`${target} was timed out for ${duration} seconds by ${moderator}. (Reason: ${reason || 'not specified.'})`);
-
-			const embed = new Discord.MessageEmbed()
-				.setTitle('**Spoodah** - New Chat Event')
-				.setColor('0xff9600')
-				.setTimestamp()
-				.addField('Timeout', `${target} was timed out for ${duration} seconds by ${moderator}.`)
-				.addField('Reason', `${reason || 'not specified.'}`);
-				//@ts-ignore
-			logChannel.send(embed);
+		if (message.channelId === spoodId.toString()) {
+			if (message.action === 'timeout') {
+				const [target, duration, reason] = message.args;
+				const moderator = message.userName;
+				console.log(`${target} was timed out for ${duration} seconds by ${moderator}. (Reason: ${reason || 'not specified.'})`);
+	
+				const embed = new Discord.MessageEmbed()
+					.setTitle('**Spoodah** - New Chat Event')
+					.setColor('0xff9600')
+					.setTimestamp()
+					.addField('Timeout', `${target} was timed out for ${duration} seconds by ${moderator}.`)
+					.addField('Reason', `${reason || 'not specified.'}`);
+					//@ts-ignore
+				logChannel.send(embed);
+			}
+	
+			if(message.action === 'ban') {
+				const [target, reason] = message.args;
+				const moderator = message.userName;
+				console.log(`${target} was banned by ${moderator}. (Reason: ${reason || 'not specified.'})`);
+	
+				const embed = new Discord.MessageEmbed()
+					.setTitle('**Spoodah** - New Chat Event')
+					.setColor('0xff0000')
+					.setTimestamp()
+					.addField('Ban', `${target} was banned by ${moderator}.`)
+					.addField('Reason', `${reason || 'not specified.'}`);
+					//@ts-ignore
+				logChannel.send(embed);
+			}
+			
+			if (message.action == 'unban') {
+				const target = message.args[0];
+				const moderator = message.userName;
+				console.log(`${target} was un-banned by ${moderator}.`);
+				
+				const embed = new Discord.MessageEmbed()
+					.setTitle('**Spoodah** - New Chat Event')
+					.setColor('0x00ff7f')
+					.setTimestamp()
+					.addField('Unban', `${target} was un-banned by ${moderator}.`);
+				// @ts-ignore
+				logChannel.send(embed);
+			}
+	
+			if (message.action == 'untimeout') {
+				const target = message.args[0];
+				const moderator = message.userName;
+				console.log(`${target} was un-banned by ${moderator}.`);
+				
+				const embed = new Discord.MessageEmbed()
+					.setTitle('**Spoodah** - New Chat Event')
+					.setColor('0x00ff7f')
+					.setTimestamp()
+					.addField('Unban', `${target} was un-banned by ${moderator}.`);
+				// @ts-ignore
+				logChannel.send(embed);
+			}
 		}
-
-		if(message.action === 'ban') {
-			const [target, reason] = message.args;
-			const moderator = message.userName;
-			console.log(`${target} was banned by ${moderator}. (Reason: ${reason || 'not specified.'})`);
-
-			const embed = new Discord.MessageEmbed()
-				.setTitle('**Spoodah** - New Chat Event')
-				.setColor('0xff0000')
-				.setTimestamp()
-				.addField('Ban', `${target} was banned by ${moderator}.`)
-				.addField('Reason', `${reason || 'not specified.'}`);
-				//@ts-ignore
-			logChannel.send(embed);
-    }
-    
-    if (message.action == 'unban') {
-      const target = message.args[0];
-      const moderator = message.userName;
-      console.log(`${target} was un-banned by ${moderator}.`);
-      
-      const embed = new Discord.MessageEmbed()
-        .setTitle('**Spoodah** - New Chat Event')
-        .setColor('0x00ff7f')
-        .setTimestamp()
-        .addField('Unban', `${target} was un-banned by ${moderator}.`);
-      // @ts-ignore
-      logChannel.send(embed);
-    }
-
-    if (message.action == 'untimeout') {
-      const target = message.args[0];
-      const moderator = message.userName;
-      console.log(`${target} was un-banned by ${moderator}.`);
-      
-      const embed = new Discord.MessageEmbed()
-        .setTitle('**Spoodah** - New Chat Event')
-        .setColor('0x00ff7f')
-        .setTimestamp()
-        .addField('Unban', `${target} was un-banned by ${moderator}.`);
-      // @ts-ignore
-      logChannel.send(embed);
-    }
 	});
 }
 
