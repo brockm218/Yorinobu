@@ -1,4 +1,4 @@
-import Discord from 'discord.js';
+import Discord, { TextChannel } from 'discord.js';
 import { RefreshableAuthProvider, StaticAuthProvider } from 'twitch-auth';
 import { ChatClient } from 'twitch-chat-client';
 import { PubSubClient } from 'twitch-pubsub-client';
@@ -43,14 +43,14 @@ async function main() {
 	})
 	.catch(console.error);
 	
-	/*const dClient = new Discord.Client();
+	const dClient = new Discord.Client();
 	dClient.on('ready', () => {
 		console.log('Discord Client Connected.');
 	});
 	await dClient.login(loginInfo.botToken);
 	
 	const apiClient = new ApiClient({ authProvider });
-	const pubSubClient = new PubSubClient();*/
+	const pubSubClient = new PubSubClient();
 
 	function publishMessage(channel: string, message: string) {
     console.log(channel, '-', message);
@@ -103,13 +103,13 @@ async function main() {
 			}
 		}
 
-		// if(message.toLowerCase() === '!myd' &&  ( msg.userInfo.isSubscriber || msg.userInfo.isVip || msg.userInfo.isMod )) {
-		// 	publishMessage(channel, computeDickSize(msg));
-		// }
+		if(message.toLowerCase() === '!myd' &&  ( msg.userInfo.isSubscriber || msg.userInfo.isVip || msg.userInfo.isMod )) {
+			publishMessage(channel, computeDickSize(msg));
+		}
 
-		// if(message.toLowerCase() === '!prime') {
-		// 	publishMessage(channel, `If you have Amazon Prime connect your account here -> twitch.amazon.com/prime ! Once you have linked your accounts click the sub button and sub for FREE PogChamp Need help? Click here -> https://goo.gl/VyzHCX cizzHearts`);
-		// }
+		if(message.toLowerCase() === '!prime') {
+			publishMessage(channel, `If you have Amazon Prime connect your account here -> twitch.amazon.com/prime ! Once you have linked your accounts click the sub button and sub for FREE PogChamp Need help? Click here -> https://goo.gl/VyzHCX cizzHearts`);
+		}
 	});
 
 	chatClient.onSub((channel, user, subInfo) => {
@@ -302,9 +302,9 @@ async function main() {
 		}
 	});
 	
-	/*const userId = await pubSubClient.registerUserListener(apiClient);
+	const userId = await pubSubClient.registerUserListener(apiClient);
 	const spoodId = await apiClient.helix.users.getUserByName(twitchChannels[0]) ?? 0; // replace desired index from twitchChannels
-	const logChannel = (await dClient.guilds.fetch('788709812711456798')).channels.cache.get('788711449219694612');
+	const logChannel = (await dClient.guilds.fetch('788709812711456798')).channels.cache.get('788711449219694612') as TextChannel;
 
 	const modListener = await pubSubClient.onModAction(userId, spoodId, message => {
 		if (message.channelId === spoodId.toString()) {
@@ -313,14 +313,15 @@ async function main() {
 				const moderator = message.userName;
 				console.log(`${target} was timed out for ${duration} seconds by ${moderator}. (Reason: ${reason || 'not specified.'})`);
 	
-				const embed = new Discord.MessageEmbed()
+				const embedVar = new Discord.MessageEmbed()
 					.setTitle('**Spoodah** - New Chat Event')
 					.setColor('0xff9600')
 					.setTimestamp()
 					.addField('Timeout', `${target} was timed out for ${duration} seconds by ${moderator}.`)
 					.addField('Reason', `${reason || 'not specified.'}`);
-					//@ts-ignore
-				logChannel.send(embed);
+				if(logChannel.isText()) {
+					(logChannel as TextChannel).send({ embed: embedVar});
+				}
 			}
 	
 			if(message.action === 'ban') {
@@ -328,14 +329,14 @@ async function main() {
 				const moderator = message.userName;
 				console.log(`${target} was banned by ${moderator}. (Reason: ${reason || 'not specified.'})`);
 	
-				const embed = new Discord.MessageEmbed()
+				const embedVar = new Discord.MessageEmbed()
 					.setTitle('**Spoodah** - New Chat Event')
 					.setColor('0xff0000')
 					.setTimestamp()
 					.addField('Ban', `${target} was banned by ${moderator}.`)
 					.addField('Reason', `${reason || 'not specified.'}`);
 					//@ts-ignore
-				logChannel.send(embed);
+				logChannel.send({ embed: embed});
 			}
 			
 			if (message.action == 'unban') {
@@ -343,13 +344,13 @@ async function main() {
 				const moderator = message.userName;
 				console.log(`${target} was un-banned by ${moderator}.`);
 				
-				const embed = new Discord.MessageEmbed()
+				const embedVar = new Discord.MessageEmbed()
 					.setTitle('**Spoodah** - New Chat Event')
 					.setColor('0x00ff7f')
 					.setTimestamp()
 					.addField('Unban', `${target} was un-banned by ${moderator}.`);
 				// @ts-ignore
-				logChannel.send(embed);
+				logChannel.send({ embed: embed});
 			}
 	
 			if (message.action == 'untimeout') {
@@ -357,16 +358,16 @@ async function main() {
 				const moderator = message.userName;
 				console.log(`${target} was un-banned by ${moderator}.`);
 				
-				const embed = new Discord.MessageEmbed()
+				const embedVar = new Discord.MessageEmbed()
 					.setTitle('**Spoodah** - New Chat Event')
 					.setColor('0x00ff7f')
 					.setTimestamp()
 					.addField('Unban', `${target} was un-banned by ${moderator}.`);
 				// @ts-ignore
-				logChannel.send(embed);
+				logChannel.send({ embed: embed});
 			}
 		}
-	});*/
+	});
 }
 
 main();
